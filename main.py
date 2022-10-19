@@ -5,14 +5,16 @@ from functions import *
 app = Flask(__name__)
 client = Client()
 @app.route('/login', methods=['POST', 'GET'])
-def login():
+def login() -> str:
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if loginOrCookie(username, password):
-            return redirect(url_for('home'))
-        else:
-            return redirect(url_for('login'))
+        # if loginOrCookie(username, password):
+            # return redirect(url_for('home'))
+        try:
+            return loginOrCookie(username, password)
+        except Exception as e:
+            return e
     else:
         return {'message': 'Login page'}
         
@@ -31,11 +33,8 @@ def home():
 
 
 @app.route('/logout', methods=['GET'])
-def logoutFunc():
-    if logout():
-        return redirect(url_for('login'))
-    else:
-        return redirect(url_for('home'))
+def logoutFunc() -> str:
+    return logout()
 
 
 @app.route('/followers', methods=['POST', 'GET'])
@@ -97,7 +96,9 @@ def dmMultiple():
     if request.method == 'POST':
         usernames = request.form.get('usernames')
         message = request.form.get('message')
-        if dmMultipleUsersAtSameTime(usernames, message):
+        userList = []
+        userList = usernames.split(',')
+        if dmMultipleUsersAtSameTime(userList, message):
             return {'message': 'Message sent'}
         else:
             return {'message': 'Error'}
@@ -111,6 +112,28 @@ def deleteCookies():
         return {'message': 'Cookies deleted'}
     else:
         return {'message': 'Error'}
+
+@app.route("/follow", methods=['POST', 'GET'])
+def follow():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        if not followUser(username):
+            return {'message': 'User followed or if private, request sent'}
+        else:
+            return {'message': 'User is already followed or error'}
+    else:
+        return {'message': 'Follow page'}
+    
+@app.route("/unfollow", methods=['POST', 'GET'])
+def unfollow():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        if unfollowUser(username):
+            return {'message': 'User unfollowed'}
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Unfollow page'}
 
 
 if __name__ == '__main__':

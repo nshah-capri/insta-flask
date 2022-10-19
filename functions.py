@@ -2,42 +2,59 @@ from UserBean import *
 from instagrapi import Client
 import os
 import pandas as pd
+import gc
 client = Client()
 pathOfCookie = ''
 
 
-def loginOrCookie(username, password):
+def loginOrCookie(username, password) -> str:
     global pathOfCookie
     try:
         pathOfCookie = 'sessions\cookie_'+username+'.json'
         if os.path.exists(pathOfCookie):
             client.load_settings(pathOfCookie)
-            client.login(username, password)
-            print('Logged in with cookie')
+            if client.login(username, password):
+                try:
+                    client.user_id_from_username(username)
+                    print('Logged in with cookie')
+                    return {'message': 'Logged in with cookie', 'status': 200, 'sessionid': client.sessionid}
+                except Exception as e:
+                    try:
+                        client.relogin()
+                        client.dump_settings(pathOfCookie)
+                        client.set_settings(settings={'use_cache': True, 'cookie' : pathOfCookie})
+                        print('Logged in with cookie....')
+
+                        return {'message': 'Logged in with cookie', 'status': 200, 'sessionid': client.sessionid}
+                    except Exception as e:
+                        print(e)
+                        return False
         else:
             client.login(username, password)
             client.dump_settings(pathOfCookie)
             client.set_settings(
                 settings={'cookie': pathOfCookie})
             print('Logged in with password')
+            return {'message': 'Logged in with password', 'status': 200, 'sessionid': client.sessionid}
     except Exception as e:
         print(e)
         return False
-    return True
+    return False
 
 
-def logout():
+def logout() -> str:
     if(pathOfCookie == ''):
         return False
     # delete cookie
     try:
         os.remove(pathOfCookie)
+        gc.collect()
         client.logout()
+        return {'message': 'Logged out', 'status': 200}
     except Exception as e:
         print(e)
-        return False
-    return True
-
+        return {'message' : 'Error while logging out', 'status': 500}
+    return {'message' : 'Error while logging out', 'status': 500}
 
 def getProfile(username):
     return client.user_info_by_username(username)
@@ -91,9 +108,14 @@ def dmSingleUser(username, message):
 def dmMultipleUsersAtSameTime(usernames, message):
     userids = []
     for username in usernames:
-        print(username)
-        userids.append(client.user_id_from_username(username))
-    return client.direct_send(text=message,user_ids=userids)
+        print(username) 
+        try:
+            dmSingleUser(username, message)
+        except Exception as e:
+            print(e)
+            return False
+    return True
+    
 
 def deleteCookiesFile():
     if(pathOfCookie == ''):
@@ -105,3 +127,11 @@ def deleteCookiesFile():
         print(e)
         return False
     return True
+
+def followUser(username):
+    userid = client.user_id_from_username(username)
+    return client.user_follow(userid)
+
+def unfollowUser(username):
+    userid = client.user_id_from_username(username)
+    return client.user_unfollow(userid)
