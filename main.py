@@ -135,7 +135,23 @@ def unfollow():
     else:
         return {'message': 'Unfollow page'}
 
-
+@app.route(rule='/storefollowers', methods=['POST', 'GET'])
+def storeFollowers():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        result =  storeFollowersInDatabase(username, amount)
+        if result:
+            return result
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Store followers page'}
 if __name__ == '__main__':
     print("Starting Python Flask Server For Prime Sieve...")
     app.run(debug=True, port=5000)

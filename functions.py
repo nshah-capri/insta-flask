@@ -5,7 +5,7 @@ import pandas as pd
 import gc
 client = Client()
 pathOfCookie = ''
-
+import db as db
 
 def loginOrCookie(username, password) -> str:
     global pathOfCookie
@@ -129,9 +129,16 @@ def deleteCookiesFile():
     return True
 
 def followUser(username):
-    userid = client.user_id_from_username(username)
-    return client.user_follow(userid)
+    useridofuser = client.user_id_from_username(username)
+    print(useridofuser)
+    return client.user_follow(useridofuser)
 
 def unfollowUser(username):
     userid = client.user_id_from_username(username)
     return client.user_unfollow(userid)
+
+def storeFollowersInDatabase(username, amount) -> str:
+    userid = client.user_id_from_username(username)
+    followers = client.user_followers(userid, use_cache=True, amount=amount)
+    result =  db.insertFollowers(client, username, followers)
+    return result
