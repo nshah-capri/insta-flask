@@ -1,8 +1,9 @@
-#create function to connect to mysql database
+# create function to connect to mysql database
 import mysql.connector
 from instagrapi import Client
 
 client = Client()
+
 
 def connect():
     mydb = mysql.connector.connect(
@@ -13,6 +14,7 @@ def connect():
         database="instagramlocal"
     )
     return mydb
+
 
 def insertFollowers(client, username, followers) -> str:
     mydb = connect()
@@ -25,7 +27,8 @@ def insertFollowers(client, username, followers) -> str:
         mydb.commit()
         count += 1
     print(count, "record inserted.")
-    return {'message' : 'Followers inserted', 'status' : 200, 'count' : count}
+    return {'message': 'Followers inserted', 'status': 200, 'count': count}
+
 
 def insertFollowing(client, username, following) -> str:
     mydb = connect()
@@ -38,7 +41,8 @@ def insertFollowing(client, username, following) -> str:
         mydb.commit()
         count += 1
     print(count, "record inserted.")
-    return {'message' : 'Following inserted', 'status' : 200, 'count' : count}
+    return {'message': 'Following inserted', 'status': 200, 'count': count}
+
 
 def insertMessageToDB(client, message) -> str:
     mydb = connect()
@@ -49,7 +53,8 @@ def insertMessageToDB(client, message) -> str:
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record inserted.")
-    return {'message' : 'Message inserted', 'status' : 200}
+    return {'message': 'Message inserted', 'status': 200}
+
 
 def getMessagesFromDB(client) -> str:
     mydb = connect()
@@ -59,7 +64,8 @@ def getMessagesFromDB(client) -> str:
     val = (client.username,)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
-    return {'message' : 'Messages fetched', 'status' : 200, 'messages' : myresult}
+    return {'message': 'Messages fetched', 'status': 200, 'messages': myresult}
+
 
 def deleteMessagesFromDB(client) -> str:
     mydb = connect()
@@ -70,7 +76,8 @@ def deleteMessagesFromDB(client) -> str:
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record(s) deleted")
-    return {'message' : 'Messages deleted', 'status' : 200}
+    return {'message': 'Messages deleted', 'status': 200}
+
 
 def getFollowersListFromDB(client) -> str:
     mydb = connect()
@@ -80,7 +87,8 @@ def getFollowersListFromDB(client) -> str:
     val = (client.username,)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
-    return {'message' : 'Followers fetched', 'status' : 200, 'followers' : myresult}
+    return {'message': 'Followers fetched', 'status': 200, 'followers': myresult}
+
 
 def getFollowingListFromDB(client) -> str:
     mydb = connect()
@@ -90,7 +98,8 @@ def getFollowingListFromDB(client) -> str:
     val = (client.username,)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
-    return {'message' : 'Following fetched', 'status' : 200, 'following' : myresult}
+    return {'message': 'Following fetched', 'status': 200, 'following': myresult}
+
 
 def deleteFollowersListFromDB(client) -> str:
     mydb = connect()
@@ -101,7 +110,8 @@ def deleteFollowersListFromDB(client) -> str:
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record(s) deleted")
-    return {'message' : 'Followers deleted', 'status' : 200}
+    return {'message': 'Followers deleted', 'status': 200}
+
 
 def deleteFollowingListFromDB(client) -> str:
     mydb = connect()
@@ -112,7 +122,8 @@ def deleteFollowingListFromDB(client) -> str:
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record(s) deleted")
-    return {'message' : 'Following deleted', 'status' : 200}
+    return {'message': 'Following deleted', 'status': 200}
+
 
 def usersToDMFromDM(client) -> str:
     mydb = connect()
@@ -122,7 +133,8 @@ def usersToDMFromDM(client) -> str:
     val = (client.username,)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
-    return {'message' : 'Users fetched', 'status' : 200, 'users' : myresult}
+    return {'message': 'Users fetched', 'status': 200, 'users': myresult}
+
 
 def usersToFollowAndDMFromDB(client) -> str:
     mydb = connect()
@@ -132,7 +144,8 @@ def usersToFollowAndDMFromDB(client) -> str:
     val = (client.username,)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
-    return {'message' : 'Users fetched', 'status' : 200, 'users' : myresult}
+    return {'message': 'Users fetched', 'status': 200, 'users': myresult}
+
 
 def insertUsersToFollowAndDMToDB(client, users) -> str:
     mydb = connect()
@@ -145,7 +158,8 @@ def insertUsersToFollowAndDMToDB(client, users) -> str:
         mydb.commit()
         count += 1
     print(count, "record inserted.")
-    return {'message' : 'Users inserted', 'status' : 200, 'count' : count}
+    return {'message': 'Users inserted', 'status': 200, 'count': count}
+
 
 def deleteUsersToFollowAndDMFromDB(client) -> str:
     mydb = connect()
@@ -156,5 +170,4 @@ def deleteUsersToFollowAndDMFromDB(client) -> str:
     mycursor.execute(sql, val)
     mydb.commit()
     print(mycursor.rowcount, "record(s) deleted")
-    return {'message' : 'Users deleted', 'status' : 200}
-
+    return {'message': 'Users deleted', 'status': 200}

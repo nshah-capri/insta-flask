@@ -1,23 +1,25 @@
 from flask import Flask, request, Request, Response, jsonify, redirect, url_for, render_template
-from instagrapi import Client
 from functions import *
+
 # Create the app
 app = Flask(__name__)
 client = Client()
+
+
 @app.route('/login', methods=['POST', 'GET'])
-def login() -> str:
+def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         # if loginOrCookie(username, password):
-            # return redirect(url_for('home'))
+        # return redirect(url_for('home'))
         try:
             return loginOrCookie(username, password)
         except Exception as e:
             return e
     else:
         return {'message': 'Login page'}
-        
+
 
 @app.route('/home', methods=['POST', 'GET'])
 def home():
@@ -33,7 +35,7 @@ def home():
 
 
 @app.route('/logout', methods=['GET'])
-def logoutFunc() -> str:
+def logoutFunc():
     return logout()
 
 
@@ -58,6 +60,7 @@ def followers():
     else:
         return {'message': 'Followers page'}
 
+
 @app.route('/following', methods=['POST', 'GET'])
 def following():
     if request.method == 'POST':
@@ -79,6 +82,7 @@ def following():
     else:
         return {'message': 'Following page'}
 
+
 @app.route('/dm', methods=['POST', 'GET'])
 def dmSingle():
     if request.method == 'POST':
@@ -90,13 +94,13 @@ def dmSingle():
             return {'message': 'Error'}
     else:
         return {'message': 'DM page'}
-    
+
+
 @app.route('/dmmultiple', methods=['POST', 'GET'])
 def dmMultiple():
     if request.method == 'POST':
         usernames = request.form.get('usernames')
         message = request.form.get('message')
-        userList = []
         userList = usernames.split(',')
         if dmMultipleUsersAtSameTime(userList, message):
             return {'message': 'Message sent'}
@@ -106,6 +110,7 @@ def dmMultiple():
     else:
         return {'message': 'DM page'}
 
+
 @app.route('/deletecookies', methods=['GET'])
 def deleteCookies():
     if deleteCookiesFile():
@@ -113,17 +118,27 @@ def deleteCookies():
     else:
         return {'message': 'Error'}
 
+
 @app.route("/follow", methods=['POST', 'GET'])
 def follow():
     if request.method == 'POST':
         username = request.form.get('username')
-        if not followUser(username):
-            return {'message': 'User followed or if private, request sent'}
+        followstatus = followUser(username)
+        if followstatus == "Already followed":
+            return {'message': 'User Already followed'}
+
+        elif followstatus == "Follow request has been sent":
+            return {'message': 'Request sent'}
+
+        elif followstatus == "Followed the user":
+            return {'message': 'Followed the user'}
+
         else:
-            return {'message': 'User is already followed or error'}
+            return {'message': 'Error'}
     else:
         return {'message': 'Follow page'}
-    
+
+
 @app.route("/unfollow", methods=['POST', 'GET'])
 def unfollow():
     if request.method == 'POST':
@@ -135,6 +150,7 @@ def unfollow():
     else:
         return {'message': 'Unfollow page'}
 
+
 @app.route(rule='/storefollowers', methods=['POST', 'GET'])
 def storeFollowers():
     if request.method == 'POST':
@@ -145,13 +161,15 @@ def storeFollowers():
             use_cache = True
         else:
             use_cache = False
-        result =  storeFollowersInDatabase(username, amount)
+        result = storeFollowersInDatabase(username, amount)
         if result:
             return result
         else:
             return {'message': 'Error'}
     else:
         return {'message': 'Store followers page'}
+
+
 if __name__ == '__main__':
     print("Starting Python Flask Server For Prime Sieve...")
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=6000)
