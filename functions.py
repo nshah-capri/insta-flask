@@ -148,3 +148,18 @@ def storeFollowersInDatabase(username, amount) -> str:
     followers = client.user_followers(userid, use_cache=True, amount=amount)
     result = db.insertFollowers(client, username, followers)
     return result
+
+
+def storeFollowingInDatabase(username, amount) -> str:
+    userid = client.user_id_from_username(username)
+    following = client.user_following(userid, use_cache=True, amount=amount)
+    result = db.insertFollowing(client, username, following)
+    return result
+
+
+def getFollowersFromDatabase(username):
+    return db.getFollowersListFromDB(client, username)
+
+
+def getFollowingListFromDB(username):
+    return db.getFollowingListFromDB(client, username)

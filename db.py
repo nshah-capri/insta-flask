@@ -2,13 +2,13 @@
 import mysql.connector
 from instagrapi import Client
 
-client = Client()
+cl = Client()
 
 
 def connect():
     mydb = mysql.connector.connect(
         host="localhost",
-        port="3309",
+        port="3306",
         user="root",
         password="",
         database="instagramlocal"
@@ -79,23 +79,23 @@ def deleteMessagesFromDB(client) -> str:
     return {'message': 'Messages deleted', 'status': 200}
 
 
-def getFollowersListFromDB(client) -> str:
+def getFollowersListFromDB(client, username) -> str:
     mydb = connect()
     mycursor = mydb.cursor()
     # here username in the query is the username of the client
-    sql = "SELECT * FROM followerslist WHERE client = %s"
-    val = (client.username,)
+    sql = "SELECT * FROM followerslist WHERE client = %s and username = %s"
+    val = (client.username, username)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
     return {'message': 'Followers fetched', 'status': 200, 'followers': myresult}
 
 
-def getFollowingListFromDB(client) -> str:
+def getFollowingListFromDB(client, username) -> str:
     mydb = connect()
     mycursor = mydb.cursor()
     # here username in the query is the username of the client
-    sql = "SELECT * FROM followinglist WHERE client = %s"
-    val = (client.username,)
+    sql = "SELECT * FROM followinglist WHERE client = %s and username = %s"
+    val = (client.username, username)
     mycursor.execute(sql, val)
     myresult = mycursor.fetchall()
     return {'message': 'Following fetched', 'status': 200, 'following': myresult}

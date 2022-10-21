@@ -169,6 +169,96 @@ def storeFollowers():
     else:
         return {'message': 'Store followers page'}
 
+@app.route(rule='/storefollowing', methods=['POST', 'GET'])
+def storeFollowing():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        result = storeFollowingInDatabase(username, amount)
+        if result:
+            return result
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Store following page'}
+
+@app.route(rule='/storemessages', methods=['POST', 'GET'])
+def storeMessages():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        result = storeMessagesInDatabase(username, amount)
+        if result:
+            return result
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Store messages page'}
+
+@app.route('/getmessages', methods=['POST', 'GET'])
+def getMessages():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        messages = getMessagesFromDatabase(username, amount)
+        if messages:
+            return {'messages': messages}
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Get messages page'}
+
+@app.route('/getfollowers', methods=['POST', 'GET'])
+def getFollowers():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        # amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        followers = getFollowersFromDatabase(username)
+        if followers:
+            return {'followers': followers}
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Get followers page'}
+
+@app.route('/getfollowing', methods=['POST', 'GET'])
+def getFollowing():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        # amount = int(request.form.get('amount', 100))
+        use_cache = request.form.get('use_cache', True)
+        if use_cache == 'True':
+            use_cache = True
+        else:
+            use_cache = False
+        following = getFollowingFromDatabase(username)
+        if following:
+            return {'following': following}
+        else:
+            return {'message': 'Error'}
+    else:
+        return {'message': 'Get following page'}
+
 
 if __name__ == '__main__':
     print("Starting Python Flask Server For Prime Sieve...")
