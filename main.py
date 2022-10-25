@@ -224,7 +224,7 @@ def getMessages():
         return {'message': 'Get messages page'}
 
 @app.route('/getfollowers', methods=['POST', 'GET'])
-def getFollowers():
+def getFollowersDB():
     if request.method == 'POST':
         username = request.form.get('username')
         # amount = int(request.form.get('amount', 100))
@@ -242,7 +242,7 @@ def getFollowers():
         return {'message': 'Get followers page'}
 
 @app.route('/getfollowing', methods=['POST', 'GET'])
-def getFollowing():
+def getFollowingDB():
     if request.method == 'POST':
         username = request.form.get('username')
         # amount = int(request.form.get('amount', 100))
