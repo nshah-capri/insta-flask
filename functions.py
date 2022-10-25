@@ -1,3 +1,5 @@
+import time
+
 from instagrapi import Client
 import os
 import pandas as pd
@@ -32,6 +34,7 @@ def loginOrCookie(username, password):
                         return False
         else:
             client.login(username, password)
+            time.sleep(10)
             client.dump_settings(pathOfCookie)
             # client.set_settings(settings={'cookie': pathOfCookie})
             print('Logged in with password')
