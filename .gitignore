@@ -4,3 +4,4 @@ __pycache__/*
 flask_app.py
 test.py
 UserBean.py
+.idea
